@@ -1,10 +1,17 @@
 package com.xuecheng.framework.exception;
 
-/**
- * @Author:
- * @Date:
- * @Description:
- * @version:
- */
-public class CustomException {
+import com.xuecheng.framework.model.response.ResultCode;
+
+public class CustomException extends RuntimeException {
+
+    // 错误代码
+    ResultCode resultCode;
+
+    public CustomException(ResultCode resultCode) {
+        this.resultCode = resultCode;
+    }
+
+    public ResultCode getResultCode() {
+        return resultCode;
+    }
 }

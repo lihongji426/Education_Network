@@ -1,10 +1,11 @@
 package com.xuecheng.framework.exception;
 
-/**
- * @Author:
- * @Date:
- * @Description:
- * @version:
- */
+import com.xuecheng.framework.model.response.CommonCode;
+import com.xuecheng.framework.model.response.ResultCode;
+
 public class ExceptionCast {
+
+    public static void cast(ResultCode resultCode) {
+        throw new CustomException(resultCode);
+    }
 }
