@@ -1,14 +1,20 @@
 package com.xuecheng.manage_course.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.Teachplan;
+import com.xuecheng.framework.domain.course.ext.CategoryNode;
+import com.xuecheng.framework.domain.course.ext.CourseInfo;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
+import com.xuecheng.framework.domain.course.request.CourseListRequest;
+import com.xuecheng.framework.domain.course.response.AddCourseResult;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
+import com.xuecheng.framework.model.response.QueryResponseResult;
+import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
-import com.xuecheng.manage_course.dao.CourseBaseRepository;
-import com.xuecheng.manage_course.dao.TeachplanMapper;
-import com.xuecheng.manage_course.dao.TeachplanRepository;
+import com.xuecheng.manage_course.dao.*;
 import org.apache.commons.lang3.StringUtils;
 import org.mockito.internal.util.StringUtil;
 import org.springframework.beans.BeanUtils;
@@ -30,6 +36,12 @@ public class CourseService {
 
     @Autowired
     private CourseBaseRepository courseBaseRepository;
+
+    @Autowired
+    private CourseMapper courseMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     /**
      * 课程计划查询
@@ -113,5 +125,59 @@ public class CourseService {
         }
         // 返回根结点的id
         return teachplanList.get(0).getId();
+    }
+
+    /**
+     * 查询我的课程列表
+     *
+     * @param page
+     * @param size
+     * @param courseListRequest
+     * @return
+     */
+    public QueryResponseResult<CourseInfo> findCourseList(int page, int size, CourseListRequest courseListRequest) {
+        if (courseListRequest == null) {
+            courseListRequest = new CourseListRequest();
+        }
+
+        if (page <= 0) {
+            page = 1;
+        }
+
+        if (size <= 0) {
+            size = 10;
+        }
+
+        // 设置分页参数
+        PageHelper.startPage(page, size);
+        // 分页查询
+        Page<CourseInfo> courseListPage = courseMapper.findCourseListPage(courseListRequest);
+        // 获取课程列表
+        List<CourseInfo> list = courseListPage.getResult();
+        // 获取总数
+        long total = courseListPage.getTotal();
+        // 设置结果集
+        QueryResult<CourseInfo> queryResult = new QueryResult<>();
+        queryResult.setList(list);
+        queryResult.setTotal(total);
+
+
+        return new QueryResponseResult<CourseInfo>(CommonCode.SUCCESS, queryResult);
+    }
+
+    /**
+     * 查询分类
+     *
+     * @return
+     */
+    public CategoryNode findList() {
+        return categoryMapper.selectList();
+    }
+
+    public AddCourseResult addCourseResult(CourseBase courseBase) {
+        // 课程状态默认设置为不发布
+        courseBase.setStatus("202001");
+        courseBase = courseBaseRepository.save(courseBase);
+        return new AddCourseResult(CommonCode.SUCCESS, courseBase.getId());
     }
 }
