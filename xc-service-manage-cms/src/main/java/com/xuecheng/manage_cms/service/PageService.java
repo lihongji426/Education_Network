@@ -454,4 +454,20 @@ public class PageService {
     public SysDictionary findDictionaryByType(String type) {
         return sysDictionaryRepository.findBydType(type);
     }
+
+    /**
+     * 保存页面，有就跟新，没有就添加
+     *
+     * @param cmsPage
+     * @return
+     */
+    public CmsPageResult save(CmsPage cmsPage) {
+        // 判断页面是否存在
+        CmsPage one = cmsPageRepository.findByPageNameAndSiteIdAndPageWebPath(cmsPage.getPageName(), cmsPage.getSiteId(), cmsPage.getPageWebPath());
+        if (one != null) {
+            // 进行更新
+            return this.update(one.getPageId(), cmsPage);
+        }
+        return this.add(cmsPage);
+    }
 }

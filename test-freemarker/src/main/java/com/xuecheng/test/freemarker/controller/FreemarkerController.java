@@ -17,6 +17,17 @@ public class FreemarkerController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @RequestMapping("/course")
+    public String course(Map<String ,Object> map) {
+        // 使用restTemplate请求轮播图的模型数据
+        ResponseEntity<Map> forEntity = restTemplate.getForEntity("http://localhost:31200/course/courseview/4028e581617f945f01617f9dabc40000", Map.class);
+        Map body = forEntity.getBody();
+        // 设置模型数据
+        map.putAll(body);
+        return "course";
+    }
+
+
     @RequestMapping("/banner")
     public String freemarker(Map<String ,Object> map) {
         // 使用restTemplate请求轮播图的模型数据

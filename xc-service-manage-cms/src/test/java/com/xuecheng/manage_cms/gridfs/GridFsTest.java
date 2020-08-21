@@ -34,8 +34,8 @@ public class GridFsTest {
     @Test
     public void testStore() throws Exception {
         // 定义file
-        FileInputStream fileInputStream = new FileInputStream(new File("D:\\index_banner.ftl"));
-        ObjectId objectId = gridFsTemplate.store(fileInputStream, "index_banner.ftl");
+        FileInputStream fileInputStream = new FileInputStream(new File("D:\\course.ftl"));
+        ObjectId objectId = gridFsTemplate.store(fileInputStream, "course.ftl");
         System.out.println(objectId);
     }
 
